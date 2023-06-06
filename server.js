@@ -44,6 +44,7 @@ app.use("/auth", require("./routes/auth"));
 app.use("/refresh", require("./routes/refresh"));
 app.use("/logout", require("./routes/logout"));
 app.use("/ticket", require("./routes/ticketRoute"));
+app.use("/project", require("./routes/projectRoute"));
 // app.use("/users", require("./routes/api/user"));
 
 mongoose.connection.once("open", () => {
