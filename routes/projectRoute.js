@@ -7,5 +7,6 @@ router
   .post("/", projectController.addProject);
 
 router.get("/singleproject", projectController.getSingleProject);
+router.put("/addTicket", projectController.getSingleProject);
 
 module.exports = router;
