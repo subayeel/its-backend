@@ -1,4 +1,6 @@
 const Project = require("../../models/Project");
+const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Types;
 
 async function addProject(req, res) {
   try {
@@ -10,15 +12,33 @@ async function addProject(req, res) {
   }
 }
 
-async function createTicket(req, res) {
+async function addProjectTicket(req, res) {
   const id = req.body.projectId;
+  // const id = "647ebf20409b216e2d59695a";
   const data = req.body;
-  
+
   try {
     const result = await Project.updateOne(
-      { _id: id },
-      { $set: { tickets: [data] } }
+      { _id: new ObjectId(id) },
+      { $push: { tickets: { ...data, _id: new mongoose.Types.ObjectId() } } }
     );
+    console.log(result);
+    return res.status(204).json("Ticket added");
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+async function updateProjectTicketStatus(req, res) {
+  const id = req.query.id;
+  const status = req.body.status;
+
+  try {
+    const result = await Project.updateOne(
+      { "tickets._id": new ObjectId(id) },
+      { $set: { "tickets.$.status": status } }
+    );
+    console.log(result);
+    return res.status(204).json("Ticket updated");
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -43,4 +63,10 @@ async function getSingleProject(req, res) {
   }
 }
 
-module.exports = { addProject, getProjects, getSingleProject, createTicket };
+module.exports = {
+  addProject,
+  getProjects,
+  getSingleProject,
+  addProjectTicket,
+  updateProjectTicketStatus,
+};
