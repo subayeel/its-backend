@@ -23,7 +23,8 @@ async function addProjectTicket(req, res) {
       { $push: { tickets: { ...data, _id: new mongoose.Types.ObjectId() } } }
     );
     console.log(result);
-    return res.status(204).json("Ticket added");
+    const updatedProject = await Project.findById(id);
+    res.send(updatedProject );
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -37,8 +38,6 @@ async function updateProjectTicketStatus(req, res) {
       { "tickets._id": new ObjectId(id) },
       { $set: { "tickets.$.status": status } }
     );
-    console.log(result);
-    return res.status(204).json("Ticket updated");
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
