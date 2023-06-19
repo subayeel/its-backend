@@ -8,6 +8,9 @@ router
 
 router.get("/singleproject", projectController.getSingleProject);
 router.put("/updateTicketStatus", projectController.updateProjectTicketStatus);
-router.put("/addTicket", projectController.addProjectTicket);
+router
+  .put("/addTicket", projectController.addProjectTicket)
+  .put("/ticket/update", projectController.updateTicketDetails)
+  .put("/ticket/delete", projectController.removeTicket);
 
 module.exports = router;

@@ -43,6 +43,7 @@ app.use("/register", require("./routes/register"));
 app.use("/auth", require("./routes/auth"));
 app.use("/refresh", require("./routes/refresh"));
 app.use("/logout", require("./routes/logout"));
+app.use("/products", require("./routes/products"));
 app.use(verifyJWT);
 app.use("/ticket", require("./routes/ticketRoute"));
 app.use("/project", require("./routes/projectRoute"));

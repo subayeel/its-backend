@@ -21,10 +21,16 @@ async function getTickets(req, res) {
 async function updateTicketStatus(req, res) {
   const id = req.query.id;
   const status = req.body.status;
-  console.log(id);
+  console.log("status updt",id);
   const ticket = await Ticket.findById(id).exec();
-  ticket.status = status
+  ticket.status = status;
   const result = await ticket.save();
   return res.json(result);
 }
-module.exports = { addTicket, getTickets, updateTicketStatus };
+
+module.exports = {
+  addTicket,
+  getTickets,
+  updateTicketStatus,
+  
+};

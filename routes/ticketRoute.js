@@ -5,6 +5,7 @@ const ticketController = require("../controllers/ticket/ticketController");
 router
   .post("/", ticketController.addTicket)
   .get("/", ticketController.getTickets)
-  .put("/updatestatus", ticketController.updateTicketStatus);
+  .put("/updatestatus", ticketController.updateTicketStatus)
+  
 
 module.exports = router;
