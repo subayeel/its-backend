@@ -34,9 +34,12 @@ const handleNewDeveloper = async (req, res) => {
       username: user,
       fullName: fullName,
       password: hashedPwd,
+      userRoleId: result._id,
       roles: { Developer: 2023 },
     });
-    const manager = await Manager.findOne({ _id: decoded.UserInfo.userId }).exec();
+    const manager = await Manager.findOne({
+      _id: decoded.UserInfo.userId,
+    }).exec();
     manager.developers.push(result);
     manager.save();
 

@@ -17,10 +17,10 @@ const userSchema = new Schema({
       default: 2023,
     },
     Manager: Number,
-    
   },
   fullName: String,
   email: String,
+  userRoleId: String,
   projectsAssigned: { type: Array, default: [] },
   refreshToken: String,
 });
