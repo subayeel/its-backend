@@ -1,10 +1,15 @@
+const Manager = require("../../models/Manager");
 const Project = require("../../models/Project");
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Types;
 
 async function addProject(req, res) {
+  const managerId = req.body.userId;
   try {
+    const manager = await Manager.findOne({ _id: managerId }).exec();
     const result = await Project.create(req.body);
+    manager?.projects.push(result);
+    await manager.save();
     console.log(result);
     res.status(201).json({ success: `New Project created!` });
   } catch (err) {

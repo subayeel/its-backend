@@ -47,6 +47,8 @@ app.use("/products", require("./routes/products"));
 app.use(verifyJWT);
 app.use("/ticket", require("./routes/ticketRoute"));
 app.use("/project", require("./routes/projectRoute"));
+app.use("/developer", require("./routes/developerRoute"));
+// app.use("/manager", require("./routes/m"));
 // app.use("/users", require("./routes/api/user"));
 
 mongoose.connection.once("open", () => {
