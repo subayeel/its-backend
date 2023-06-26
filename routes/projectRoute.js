@@ -4,7 +4,8 @@ const projectController = require("../controllers/project/projectController");
 
 router
   .get("/", projectController.getProjects)
-  .post("/", projectController.addProject);
+  .post("/", projectController.addProject)
+  .delete("/:id", projectController.deleteProject);
 
 router.get("/singleproject", projectController.getSingleProject);
 router.put("/updateTicketStatus", projectController.updateProjectTicketStatus);

@@ -9,6 +9,8 @@ const developerSchema = new Schema({
     },
   },
   fullName: String,
+  username: String,
+  
   managerId: String,
   email: String,
   projectsAssigned: { type: Array, default: [] },

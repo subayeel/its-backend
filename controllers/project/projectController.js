@@ -1,13 +1,20 @@
 const Manager = require("../../models/Manager");
 const Project = require("../../models/Project");
 const mongoose = require("mongoose");
+const jwtDecode = require("jwt-decode");
 const { ObjectId } = mongoose.Types;
 
 async function addProject(req, res) {
-  const managerId = req.body.userId;
+  const token = req.headers.authorization.split(" ")[1];
+  const decoded = jwtDecode(token);
   try {
-    const manager = await Manager.findOne({ _id: managerId }).exec();
-    const result = await Project.create(req.body);
+    const manager = await Manager.findOne({
+      _id: decoded.UserInfo.userId,
+    }).exec();
+    const result = await Project.create({
+      ...req.body,
+      managerId: decoded.UserInfo.userId,
+    });
     manager?.projects.push(result);
     await manager.save();
     console.log(result);
@@ -15,6 +22,17 @@ async function addProject(req, res) {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
+}
+
+async function deleteProject(req, res) {
+  const projId = req.params.id;
+  // const token = req.headers.authorization.split(" ")[1];
+  // const decoded = jwtDecode(token);
+
+  // res.send("sss");
+  const dev = await Project.deleteOne({ _id: projId });
+
+  res.json(dev);
 }
 
 async function addProjectTicket(req, res) {
@@ -95,10 +113,13 @@ async function removeTicket(req, res) {
 }
 
 async function getProjects(req, res) {
+  // const mangerId = req.body.managerId;
+  const token = req.headers.authorization.split(" ")[1];
+  const decoded = jwtDecode(token);
   try {
-    const result = await Project.find();
+    const result = await Project.find({ managerId: decoded.UserInfo.userId });
     res.status(201).json(result);
-  } catch (e) {
+  } catch (err) {
     res.status(500).json({ message: err.message });
   }
 }
@@ -115,6 +136,7 @@ async function getSingleProject(req, res) {
 
 module.exports = {
   addProject,
+  deleteProject,
   getProjects,
   getSingleProject,
   addProjectTicket,

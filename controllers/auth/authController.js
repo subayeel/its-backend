@@ -16,9 +16,10 @@ const handleLogin = async (req, res) => {
   const foundDeveloper = await Developer.findOne({ username: user }).exec();
   const userId = foundManager ? foundManager._id : foundDeveloper?._id;
 
-  if (!foundUser && (foundManager || foundDeveloper))
+  
+  if (!foundUser )
     return res.sendStatus(401); //unauthorized
-  console.log(userId.toString());
+
   //evaluate password
   const match = await bcrypt.compare(pwd, foundUser.password);
   if (match) {
