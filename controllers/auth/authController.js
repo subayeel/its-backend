@@ -19,7 +19,7 @@ const handleLogin = async (req, res) => {
   
   if (!foundUser )
     return res.sendStatus(401); //unauthorized
-
+    const roles = Object.values(foundUser.roles);
   //evaluate password
   const match = await bcrypt.compare(pwd, foundUser.password);
   if (match) {
@@ -28,7 +28,7 @@ const handleLogin = async (req, res) => {
       {
         UserInfo: {
           username: foundUser.username,
-          roles: foundUser.roles,
+          roles: roles,
           userId: userId.toString(),
         },
       },
@@ -39,7 +39,7 @@ const handleLogin = async (req, res) => {
       {
         UserInfo: {
           username: foundUser.username,
-          roles: foundUser.roles,
+          roles: roles,
           userId: userId.toString(),
         },
       },
@@ -53,6 +53,8 @@ const handleLogin = async (req, res) => {
     const result = await foundUser.save();
     console.log(result);
 
+    // const roles = Object.values(foundUser.roles)
+
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
       sameSite: "None",
@@ -62,13 +64,13 @@ const handleLogin = async (req, res) => {
     if (foundManager) {
       res.json({
         accessToken,
-        roles: foundUser.roles,
+        roles: roles,
         userId: userId.toString(),
       });
     } else {
       res.json({
         accessToken,
-        roles: foundUser.roles,
+        roles: roles,
         userId: userId.toString(),
       });
     }

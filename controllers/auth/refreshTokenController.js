@@ -22,6 +22,7 @@ const handleRefreshToken = async (req, res) => {
         UserInfo: {
           username: decoded.UserInfo.username,
           userId: decoded.UserInfo.userId,
+          managerId: foundUser.managerId,
           roles: roles,
         },
       },
@@ -29,7 +30,7 @@ const handleRefreshToken = async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "1d" }
     );
-    res.json({ accessToken });
+    res.json({ accessToken, roles, managerId: foundUser.managerId });
   });
 };
 

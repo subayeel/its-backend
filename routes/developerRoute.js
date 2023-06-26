@@ -4,6 +4,7 @@ const developerController = require("../controllers/developer/developerControlle
 
 router
   .get("/", developerController.getDevelopers)
+  .get("/myprojects", developerController.getAssignedProjects)
   .delete("/:id", developerController.deleteDevelopers);
 //   .post("/", developerController.addProduct)
 //   .put("/:id", developerController.updateProduct)
