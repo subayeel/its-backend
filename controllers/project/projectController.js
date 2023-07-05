@@ -1,23 +1,59 @@
 const Manager = require("../../models/Manager");
 const Project = require("../../models/Project");
+const Developers = require("../../models/Developer");
 const mongoose = require("mongoose");
 const jwtDecode = require("jwt-decode");
+const Developer = require("../../models/Developer");
 const { ObjectId } = mongoose.Types;
 
 async function addProject(req, res) {
   const token = req.headers.authorization.split(" ")[1];
   const decoded = jwtDecode(token);
+  const employeesId = req.body.employees?.map((emp) => emp.userId);
   try {
+    //Get the maanger id
     const manager = await Manager.findOne({
       _id: decoded.UserInfo.userId,
     }).exec();
+
+    //create project with managerID
     const result = await Project.create({
       ...req.body,
       managerId: decoded.UserInfo.userId,
     });
+
+    //store project in manager Document
     manager?.projects.push(result);
     await manager.save();
-    console.log(result);
+
+    //get All Developers with maangerId as filter
+    const devs = await Developer.updateMany(
+      {
+        // managerId: decoded.UserInfo.userId,
+        _id: { $in: employeesId },
+      },
+      {
+        $push: {
+          projectsAssigned: result,
+        },
+      }
+    ).exec();
+    console.log(devs);
+
+    //push this project if username matches with req.body.username
+    //Store Project in all linked Developers
+    // devs.map((dev) => {
+    //   if (employeesId.includes(dev.userId)) {
+    //     dev.projectsAssigned.push(result);
+    //   } else {
+    //     return;
+    //   }
+    //   return dev;
+    // });
+
+    // const devResponse = await devs.save();
+
+    // console.log(devResponse);
     res.status(201).json({ success: `New Project created!` });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -41,12 +77,24 @@ async function addProjectTicket(req, res) {
   const data = req.body;
 
   try {
-    const result = await Project.updateOne(
-      { _id: new ObjectId(id) },
-      { $push: { tickets: { ...data, _id: new mongoose.Types.ObjectId() } } }
-    );
-    console.log(result);
+    // const result = await Project.updateOne(
+    //   { _id: new ObjectId(id) },
+    //   { $push: { tickets: { ...data, _id: new mongoose.Types.ObjectId() } } }
+    // );
+
     const updatedProject = await Project.findById(id);
+
+    //get assignee of project
+
+    console.log(req.body);
+    const devResult = await Developer.updateOne(
+      { fullName: req.body.assignee },
+      { $push: { ticketsAssigned: { ...data, _id: new mongoose.Types.ObjectId() } } }
+    );
+
+    console.log(devResult);
+
+    //Add ticket to that assignee
     res.send(updatedProject);
   } catch (err) {
     res.status(500).json({ message: err.message });
