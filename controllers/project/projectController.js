@@ -77,10 +77,10 @@ async function addProjectTicket(req, res) {
   const data = req.body;
 
   try {
-    // const result = await Project.updateOne(
-    //   { _id: new ObjectId(id) },
-    //   { $push: { tickets: { ...data, _id: new mongoose.Types.ObjectId() } } }
-    // );
+    const result = await Project.updateOne(
+      { _id: new ObjectId(id) },
+      { $push: { tickets: { ...data, _id: new mongoose.Types.ObjectId() } } }
+    );
 
     const updatedProject = await Project.findById(id);
 
