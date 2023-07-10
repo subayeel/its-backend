@@ -11,7 +11,7 @@ async function addProject(req, res) {
   const decoded = jwtDecode(token);
   const employeesId = req.body.employees?.map((emp) => emp.userId);
   try {
-    //Get the maanger id
+    //Get the maanger id from accesstoken
     const manager = await Manager.findOne({
       _id: decoded.UserInfo.userId,
     }).exec();
@@ -29,7 +29,6 @@ async function addProject(req, res) {
     //get All Developers with maangerId as filter
     const devs = await Developer.updateMany(
       {
-        // managerId: decoded.UserInfo.userId,
         _id: { $in: employeesId },
       },
       {

@@ -21,6 +21,37 @@ async function getAssignedProjects(req, res) {
   });
   return res.json(proj);
 }
+async function updateDeveloper(req, res) {
+  const token = req.headers.authorization.split(" ")[1];
+  const decoded = jwtDecode(token);
+  const devId = req.params.id;
+  const data = req.body;
+  const projectIds = data.projects.map((p) => p._id);
+
+  //Add All project
+  const dev = await Developer.findOne({ _id: devId });
+  dev.fullName = data.fullName;
+  dev.projectsAssigned = data.projects;
+  dev.save();
+
+  //Append that employee to Project
+  const proj = await Project.updateMany(
+    {
+      _id: { $in: projectIds },
+    },
+    {
+      $push: {
+        employees: { userId: devId, fullName: dev.fullName },
+      },
+    }
+  ).exec();
+  // if (!proj.employees.map((p) => p.userId).includes(devId)) {
+  //   proj.employees.push({ userId: dev.userId, fullName: dev.fullName });
+  // }
+  console.log(proj);
+  console.log(dev);
+  return res.json(dev);
+}
 
 async function deleteDevelopers(req, res) {
   const devId = req.params.id;
@@ -33,4 +64,9 @@ async function deleteDevelopers(req, res) {
   res.json(dev);
 }
 
-module.exports = { getDevelopers, deleteDevelopers, getAssignedProjects };
+module.exports = {
+  getDevelopers,
+  deleteDevelopers,
+  getAssignedProjects,
+  updateDeveloper,
+};
